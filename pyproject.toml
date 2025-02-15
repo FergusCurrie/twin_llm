@@ -88,3 +88,4 @@ no-sections = true
 [tool.poe.tasks]
 test-poe = "echo 'testing poe'"
 local-zenml-server-up = "poetry run zenml up"
+run-digital-data-etl-paul = "poetry run python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_paul_iusztin.yaml"

@@ -2,7 +2,7 @@
     "name": "python-template", // replace with name
     "dockerFile": "Dockerfile.dev",
     "runArgs": [
-        "--network=ml_platform"
+        "--network=llm_twin"
     ],
     "context": "..",
     "customizations": {
@@ -13,7 +13,8 @@
                 "zhang-renyang.vscode-react",
                 "ms-azuretools.vscode-docker",
                 "charliermarsh.ruff",
-                "njpwerner.autodocstring"
+                "njpwerner.autodocstring",
+                "mongodb.mongodb-vscode"
             ],
             "settings": {
                 "terminal.integrated.defaultProfile.linux": "bash",

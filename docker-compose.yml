@@ -39,3 +39,4 @@ volumes:
 networks:
   llm_twin:
     driver: bridge
+    external: true
