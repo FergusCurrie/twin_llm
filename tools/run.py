@@ -8,9 +8,9 @@ from pipelines import (
     # end_to_end_data,
     # evaluating,
     # export_artifact_to_json,
-    # feature_engineering,
+    feature_engineering,
     # generate_datasets,
-    # training,
+    training,
 )
 
 
@@ -43,41 +43,18 @@ Examples:
 
 """
 )
+@click.option("--no-cache", is_flag=True, default=False, help="Disable caching for the pipeline run.")
 @click.option(
-    "--no-cache",
-    is_flag=True,
-    default=False,
-    help="Disable caching for the pipeline run.",
+    "--run-end-to-end-data", is_flag=True, default=False, help="Whether to run all the data pipelines in one go."
+)
+@click.option("--run-etl", is_flag=True, default=False, help="Whether to run the ETL pipeline.")
+@click.option(
+    "--run-export-artifact-to-json", is_flag=True, default=False, help="Whether to run the Artifact -> JSON pipeline"
 )
 @click.option(
-    "--run-end-to-end-data",
-    is_flag=True,
-    default=False,
-    help="Whether to run all the data pipelines in one go.",
+    "--etl-config-filename", default="digital_data_etl_paul_iusztin.yaml", help="Filename of the ETL config file."
 )
-@click.option(
-    "--run-etl",
-    is_flag=True,
-    default=False,
-    help="Whether to run the ETL pipeline.",
-)
-@click.option(
-    "--run-export-artifact-to-json",
-    is_flag=True,
-    default=False,
-    help="Whether to run the Artifact -> JSON pipeline",
-)
-@click.option(
-    "--etl-config-filename",
-    default="digital_data_etl_paul_iusztin.yaml",
-    help="Filename of the ETL config file.",
-)
-@click.option(
-    "--run-feature-engineering",
-    is_flag=True,
-    default=False,
-    help="Whether to run the FE pipeline.",
-)
+@click.option("--run-feature-engineering", is_flag=True, default=False, help="Whether to run the FE pipeline.")
 @click.option(
     "--run-generate-instruct-datasets",
     is_flag=True,
@@ -90,24 +67,9 @@ Examples:
     default=False,
     help="Whether to run the preference dataset generation pipeline.",
 )
-@click.option(
-    "--run-training",
-    is_flag=True,
-    default=False,
-    help="Whether to run the training pipeline.",
-)
-@click.option(
-    "--run-evaluation",
-    is_flag=True,
-    default=False,
-    help="Whether to run the evaluation pipeline.",
-)
-@click.option(
-    "--export-settings",
-    is_flag=True,
-    default=False,
-    help="Whether to export your settings to ZenML or not.",
-)
+@click.option("--run-training", is_flag=True, default=False, help="Whether to run the training pipeline.")
+@click.option("--run-evaluation", is_flag=True, default=False, help="Whether to run the evaluation pipeline.")
+@click.option("--export-settings", is_flag=True, default=False, help="Whether to export your settings to ZenML or not.")
 def main(
     no_cache: bool = False,
     run_end_to_end_data: bool = False,
@@ -137,9 +99,7 @@ def main(
         logger.info("Exporting settings to ZenML secrets.")
         settings.export()
 
-    pipeline_args = {
-        "enable_cache": not no_cache,
-    }
+    pipeline_args = {"enable_cache": not no_cache}
     root_dir = Path(__file__).resolve().parent.parent
 
     if run_etl:
@@ -150,6 +110,17 @@ def main(
         print(type(digital_data_etl))
         digital_data_etl.with_options(**pipeline_args)(**run_args_etl)
 
+    if run_feature_engineering:
+        run_args_fe = {}
+        pipeline_args["config_path"] = root_dir / "configs" / "feature_engineering.yaml"
+        pipeline_args["run_name"] = f"feature_engineering_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        feature_engineering.with_options(**pipeline_args)(**run_args_fe)
+
+    if run_training:
+        run_args_cd = {}
+        pipeline_args["config_path"] = root_dir / "configs" / "training.yaml"
+        pipeline_args["run_name"] = f"training_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        training.with_options(**pipeline_args)(**run_args_cd)
 
 
 if __name__ == "__main__":

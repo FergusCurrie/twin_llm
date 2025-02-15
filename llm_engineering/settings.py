@@ -29,7 +29,7 @@ class Settings(BaseSettings):
 
     # Qdrant vector database
     USE_QDRANT_CLOUD: bool = False
-    QDRANT_DATABASE_HOST: str = "localhost"
+    QDRANT_DATABASE_HOST: str = "qdrant"
     QDRANT_DATABASE_PORT: int = 6333
     QDRANT_CLOUD_URL: str = "str"
     QDRANT_APIKEY: str | None = None

@@ -1,6 +1,6 @@
 
 
-
+# Following 'LLM-engineer handbook'
 
 docker network create llm_twin
 
@@ -14,3 +14,12 @@ client.server_info()
 
 
 poetry poe test-poe
+
+
+1. Scraping web data 
+2. Raw data documents in mongo db 
+3. Preprocessing 
+4. Chunking 
+5. Embedding 
+6. Embeddings into qdrant 
+7. create SFT dataset, using openai
